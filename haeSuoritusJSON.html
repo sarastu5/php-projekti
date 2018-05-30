@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fi">
+	<head>
+		<meta charset="utf-8"> 
+
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+
+		<link rel="stylesheet" type="text/css" href="style.css">
+
+		<!-- jQuery library -->
+		<!--
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		-->
+
+		<script src="http://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
+
+		<!-- Popper JS -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+
+		<!-- Latest compiled JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+		<title>Kuntosalitreenit - Hae suoritus</title>
+	</head>
+
+	<body>
+		<div class="container">
+			<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+      		<a class="navbar-brand" href="http://localhost/projekti/index.php">Kuntosaliträkkäys</a>
+      		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        		<span class="navbar-toggler-icon"></span>
+      		</button>
+	      	<div class="collapse navbar-collapse" id="navbarCollapse">
+	        	<ul class="navbar-nav mr-auto">
+	          		<li class="nav-item active">
+	            		<a class="nav-link" href="index.php">Etusivu<span class="sr-only">(current)</span></a>
+	          		</li>
+		          	<li class="nav-item">
+	            		<a class="nav-link" href="tilastot.php">Tilastot</a>
+	          		</li>
+	          			<li class="nav-item">
+	            		<a class="nav-link" href="haeSuoritusJSON.html">Hae</a>
+	          		</li>
+	          		<li class="nav-item">
+	            		<a class="nav-link" href="asetukset.php">Asetukset</a>
+	          		</li>
+	        	</ul>
+		      </div>
+		    </nav>
+
+		    <form action="haeSuoritusJSON.html" method="post">
+				<input type="text" id="suoritus" name="suoritus">
+				<input type="button" id="hae" value="Hae"><br><br>
+			</form>
+
+			<div id="lista"></div>
+
+			<script>
+				$(document).on("ready", function() {
+					console.log("hoi");
+					$("#hae").on("click", function() {
+						$.ajax({
+							url: "suorituksetJSON.php",
+							method: "get",
+							data: {suoritus: $("#suoritus").val()},
+							dataType: "json", timeout: 5000
+						})
+
+						.done(function(data) { //data = suoritukset JSON-muodossa
+							$("#lista").html("");
+
+							for(var i = 0; i < data.length; i++) { //käydään data-taulukko läpi
+								$("#lista").append("<p>Liikkeen nimi: " + data[i].liike + //listan perään lisätään
+								"<br>Painot: " + data[i].painot +
+								"<br>Toistot: " + data[i].toistot +
+								"<br>Sarjat: " + data[i].sarjat +
+								"<br>Huomiot: " + data[i].huomiot + "</p>");
+							} //for
+						}) //done
+
+						.fail(function() {
+							$("#lista").html("<p>Listausta ei voida tehdä</p>");
+						}); //fail
+					}); // click
+				}); // ready
+			</script>
+
+		</div>
+	</body>
+</html>

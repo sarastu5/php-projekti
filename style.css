@@ -1,3 +1,7 @@
 small {
 	color: red;
 }
+
+.sr-only {
+	font-weight: bold;
+}

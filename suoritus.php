@@ -1,11 +1,13 @@
 <?php 
 
-class Suoritus {
+class Suoritus implements JsonSerializable {
+	private $id;
 	private $painot;
 	private $toistot;
 	private $sarjat;
 	private $liike;
 	private $huomiot;
+	private $aika;
 
 	private static $virhelista = array (
 					0 => "",
@@ -23,9 +25,14 @@ class Suoritus {
 		$this->huomiot = trim($huomiot);
 	}
 
+	public function setId($id) {
+		$this->id = trim($id);
+	}
+
 	public function setPainot($painot) {
 		$this->painot = trim($painot);
 	}
+
 
 	public function setToistot($toistot) {
 		$this->toistot = trim($toistot);
@@ -41,6 +48,14 @@ class Suoritus {
 
 	public function setHuomiot($huomiot) {
 		$this->huomiot = trim($huomiot);
+	}
+
+	public function setAika($aika) {
+		$this->aika = trim($aika);
+	}
+
+	public function getId() {
+		return $this->id;
 	}
 
 	public function getPainot() {
@@ -61,6 +76,10 @@ class Suoritus {
 
 	public function getHuomiot() {
 		return $this->huomiot;
+	}
+
+	public function getAika() {
+		return $this->aika;
 	}
 
 	public function checkLiike() {
@@ -112,6 +131,18 @@ class Suoritus {
 
 	public static function getError($virhekoodi) {
 		return Suoritus::$virhelista[$virhekoodi];
+	}
+
+	public function jsonSerialize() {
+		return array (
+			"id" => $this->id,
+			"liike" => $this->liike,
+			"painot" => $this->painot,
+			"toistot" => $this->toistot,
+			"sarjat" => $this->sarjat,
+			"aika" => $this->aika,
+			"huomiot" => $this->huomiot
+		);
 	}
 }
 

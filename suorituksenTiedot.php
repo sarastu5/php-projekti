@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-
 <html lang="fi">
 	<head>
-		 <meta charset="utf-8"> 
-		 <meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8"> 
+
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<!-- Latest compiled and minified CSS -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+
+		<link rel="stylesheet" type="text/css" href="style.css">
 
 		<!-- jQuery library -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -16,21 +18,8 @@
 		<!-- Latest compiled JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
 
-		<title>Kuntosalitreenit - Asetukset</title>
+		<title>Kuntosalitreenit - Suorituksen tiedot</title>
 	</head>
-
-	<?php
-		if (isset($_POST["tallenna"])) {
-			setcookie("kayttaja", $_POST["nimi"], time() + 30*24*60*60);
-			header("location: index.php");
-			exit;
-		}
-
-		$kayttaja = "";
-		if (isset($_COOKIE["kayttaja"])) {
-			$kayttaja = $_COOKIE["kayttaja"];
-		}
-	?>
 
 	<body>
 		<div class="container">
@@ -51,21 +40,34 @@
 	            		<a class="nav-link" href="haeSuoritusJSON.html">Hae</a>
 	          		</li>
 	          		<li class="nav-item">
-	            		<a class="nav-link" href="asetukset.php">Asetukset<span class="sr-only">(current)</span></a>
+	            		<a class="nav-link" href="asetukset.php">Asetukset</a>
 	          		</li>
 	        	</ul>
 		      </div>
 		    </nav>
 
-			<form action="asetukset.php" method="post">
-	  			<div class="form-group row">
-	    			<label class="col-form-label col-sm-2" for="nimi">Nimi:</label>
-	    			<div class="col-sm-4">
-	     				<input type="text" class="form-control" id="nimi" name="nimi" value="<?php print(htmlentities($kayttaja, ENT_QUOTES, "UTF-8"));?>">
-	    			</div>
-	    			<input class="btn btn-info" type="submit" name="tallenna" value="Tallenna">
-	    		</div>
-	    	</form>
+		    <h2>Suorituksen tiedot</h2>
+
+		    <?php
+				try {
+					$id = $_GET["id"]; //id tulee formilta (name = "id");
+					require_once "suoritusPDO.php"; //sisällyttää suoritusPDO.php:n
+					$kantakasittely = new suoritusPDO(); //tallennetaan $kantakäsittelyyn uusi suoritusPDO-olio
+					$id = $kantakasittely->naytaSuoritus($id); //annetaan naytaSuoritus():lle parametrina poistettava id, tallennetaan se $id-muuttujaan 
+					
+				} catch (Exception $error) {
+					print($error->getMessage());
+				}
+
+				print("<p>Liike: " . $id->getLiikkeet());
+				print("<br>Painot: " . $id->getPainot());
+				print("<br>Toistot: " . $id->getToistot());
+				print("<br>Sarjat: " . $id->getSarjat());
+				print("<br>Huomiot: " . $id->getHuomiot() . "</p>");
+			?>
+
+			<form action="tilastot.php" method="post">
+				<input class="btn btn-info" type="submit" name="takaisin"
+					value="Takaisin">
+			</form>
 		</div>
-	</body>
-</html>
